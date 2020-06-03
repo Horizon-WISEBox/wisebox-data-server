@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from . import models
+
+
+admin.site.register(models.Organisation)
+admin.site.register(models.ApiKey)
+admin.site.register(models.Device)

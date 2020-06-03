@@ -1,13 +1,11 @@
-FROM pypy:3.6-7.3.0-buster
+FROM python:3.8.3-buster
 ENV PYTHONUNBUFFERED 1
 EXPOSE 80
 RUN apt-get update \
   && apt-get install -y --no-install-recommends \
-      libpq-dev git \
-  netcat \
+      libpq-dev \
+      netcat \
   && rm -rf /var/lib/apt/lists/* \
-  && update-alternatives --install \
-      /usr/bin/python python /usr/local/bin/pypy3 3 \
   && pip install pipfile-requirements \
   && mkdir /wiseparks
 WORKDIR /wiseparks
