@@ -13,6 +13,9 @@ class Organisation(models.Model):
         get_user_model(),
         related_name='organisations')
 
+    def __str__(self):
+        return f'Organisation(id={self.id}, name={self.name})'
+
 
 class ApiKey(models.Model):
 
@@ -25,6 +28,9 @@ class ApiKey(models.Model):
         on_delete=models.CASCADE,
         related_name='api_keys')
 
+    def __str__(self):
+        return f'ApiKey(id={self.id})'
+
 
 class Device(models.Model):
 
@@ -35,9 +41,15 @@ class Device(models.Model):
         on_delete=models.CASCADE,
         related_name='devices')
 
+    def __str__(self):
+        return f'Device(id={self.id}, mac={self.mac})'
+
 
 class Timezone(models.Model):
     name = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f'Timezone(id={self.id}, name={self.name})'
 
 
 class Bucket(models.Model):
@@ -54,6 +66,9 @@ class Bucket(models.Model):
     interval = models.PositiveIntegerField()
     count = models.PositiveSmallIntegerField()
 
+    def __str__(self):
+        return f'Bucket(id={self.id}'
+
 
 class BucketRssi(models.Model):
 
@@ -63,6 +78,9 @@ class BucketRssi(models.Model):
         related_name='rssis')
 
     rssi = models.SmallIntegerField()
+
+    def __str__(self):
+        return f'BucketRssi(id={self.id}'
 
 
 class BucketMetadata(models.Model):
@@ -74,3 +92,8 @@ class BucketMetadata(models.Model):
     name = models.TextField()
 
     value = models.TextField()
+
+    def __str__(self):
+        return (
+            f'BucketMetadata(id={self.id}, name={self.name}, value={self.value}'
+        )
