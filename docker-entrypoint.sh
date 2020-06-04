@@ -5,5 +5,4 @@
 /wiseparks/manage.py migrate
 /wiseparks/manage.py createcachetable
 unset DJANGO_ADMIN_USER DJANGO_ADMIN_EMAIL DJANGO_ADMIN_PASSWORD
-gunicorn -b 0.0.0.0:80 -w 4 --timeout 600 \
-    -k uvicorn.workers.UvicornH11Worker $@ wiseparks.asgi
+gunicorn -b 0.0.0.0:80 -w 4 --timeout 600 $@ wiseparks.asgi
