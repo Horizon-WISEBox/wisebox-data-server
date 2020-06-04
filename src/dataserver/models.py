@@ -16,6 +16,11 @@ class Organisation(models.Model):
     def __str__(self):
         return f'Organisation(id={self.id}, name={self.name})'
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['name']),
+        ]
+
 
 class ApiKey(models.Model):
 
@@ -31,6 +36,11 @@ class ApiKey(models.Model):
     def __str__(self):
         return f'ApiKey(id={self.id})'
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['key']),
+        ]
+
 
 class Device(models.Model):
 
@@ -44,12 +54,23 @@ class Device(models.Model):
     def __str__(self):
         return f'Device(id={self.id}, mac={self.mac})'
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['mac']),
+        ]
+        unique_together = [['mac', 'organisation']]
+
 
 class Timezone(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, unique=True)
 
     def __str__(self):
         return f'Timezone(id={self.id}, name={self.name})'
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['name']),
+        ]
 
 
 class Bucket(models.Model):

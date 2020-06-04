@@ -18,7 +18,9 @@ def decode_and_save(data: bytes, org: models.Organisation):
     mac = ':'.join([f'{x:02x}' for x in mac_bytes])
     i += 6
     try:
-        device = models.Device.objects.get(mac__exact=mac)
+        device = models.Device.objects.get(
+            mac__exact=mac,
+            organisation__id=org.id)
     except ObjectDoesNotExist:
         device = models.Device()
         device.mac = mac
