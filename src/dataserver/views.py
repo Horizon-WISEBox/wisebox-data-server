@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from . import logfiles, models
 
 
-class UploadV1_x_xView(View):
+class UploadV1View(View):
 
     def post(self, request, *args, **kwargs):  # pylint: disable=unused-argument
         if len(request.GET.getlist('api_key')) != 1:
@@ -20,4 +20,4 @@ class UploadV1_x_xView(View):
         return HttpResponse()
 
 
-upload_v1_x_x_view = csrf_exempt(UploadV1_x_xView.as_view())
+upload_v1_view = csrf_exempt(UploadV1View.as_view())
