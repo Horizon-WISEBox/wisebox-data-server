@@ -21,3 +21,20 @@ class UploadV1View(View):
 
 
 upload_v1_view = csrf_exempt(UploadV1View.as_view())
+
+
+class UploadVNoneView(View):
+
+    def post(self, request, *args, **kwargs):  # pylint: disable=unused-argument
+        if len(request.GET.getlist('api_key')) != 1:
+            return HttpResponseForbidden()
+        try:
+            api_key = models.ApiKey.objects.get(
+                key__exact=request.GET['api_key'])
+        except (ObjectDoesNotExist, MultipleObjectsReturned):
+            return HttpResponseForbidden()
+        logfiles.decode_and_save_vnone(request.body, api_key.organisation)
+        return HttpResponse()
+
+
+upload_vnone_view = csrf_exempt(UploadVNoneView.as_view())

@@ -78,13 +78,13 @@ class Bucket(models.Model):
         Device,
         on_delete=models.CASCADE,
         related_name='buckets')
-    channel = models.PositiveSmallIntegerField()
     start_time = models.DateTimeField()
     timezone = models.ForeignKey(
         Timezone,
         on_delete=models.CASCADE,
         related_name='+')
     interval = models.PositiveIntegerField()
+    frequency = models.PositiveSmallIntegerField()
     count = models.PositiveSmallIntegerField()
 
     def __str__(self):
