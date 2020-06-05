@@ -6,9 +6,8 @@ from django.views.generic.base import RedirectView
 
 from . import views
 
-
 urlpatterns = [
-    re_path('^api/v2[^/]*/upload/?$', views.upload_view),
+    re_path('^api/v1[^/]*/upload/?$', views.upload_v1_x_x_view),
     re_path(
         '^favicon.ico$',
         RedirectView.as_view(

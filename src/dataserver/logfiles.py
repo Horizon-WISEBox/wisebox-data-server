@@ -3,7 +3,6 @@ import json
 import struct
 
 import pytz
-
 from django.core.exceptions import ObjectDoesNotExist
 
 from . import models

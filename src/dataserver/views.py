@@ -1,12 +1,12 @@
-from django.core.exceptions import (MultipleObjectsReturned, ObjectDoesNotExist)
+from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
 from django.http import HttpResponse, HttpResponseForbidden
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from . import (models, utils)
+from . import logfiles, models
 
 
-class UploadView(View):
+class UploadV1_x_xView(View):
 
     def post(self, request, *args, **kwargs):  # pylint: disable=unused-argument
         if len(request.GET.getlist('api_key')) != 1:
@@ -16,8 +16,8 @@ class UploadView(View):
                 key__exact=request.GET['api_key'])
         except (ObjectDoesNotExist, MultipleObjectsReturned):
             return HttpResponseForbidden()
-        utils.decode_and_save(request.body, api_key.organisation)
+        logfiles.decode_and_save(request.body, api_key.organisation)
         return HttpResponse()
 
 
-upload_view = csrf_exempt(UploadView.as_view())
+upload_v1_x_x_view = csrf_exempt(UploadV1_x_xView.as_view())
