@@ -1,4 +1,5 @@
 from django.core.exceptions import MultipleObjectsReturned, ObjectDoesNotExist
+from django.db import transaction
 from django.http import HttpResponse, HttpResponseForbidden
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -20,7 +21,7 @@ class UploadV1View(View):
         return HttpResponse()
 
 
-upload_v1_view = csrf_exempt(UploadV1View.as_view())
+upload_v1_view = csrf_exempt(transaction.atomic(UploadV1View.as_view()))
 
 
 class UploadVNoneView(View):
@@ -37,4 +38,4 @@ class UploadVNoneView(View):
         return HttpResponse()
 
 
-upload_vnone_view = csrf_exempt(UploadVNoneView.as_view())
+upload_vnone_view = csrf_exempt(transaction.atomic(UploadVNoneView.as_view()))
