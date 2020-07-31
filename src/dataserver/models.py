@@ -51,6 +51,10 @@ class Device(models.Model):
         on_delete=models.CASCADE,
         related_name='devices')
 
+    description = models.TextField(
+        blank=True,
+        default='')
+
     def __str__(self):
         return f'Device(id={self.id}, mac={self.mac})'
 
