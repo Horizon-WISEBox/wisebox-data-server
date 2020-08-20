@@ -122,3 +122,36 @@ class BucketMetadata(models.Model):
         return (
             f'BucketMetadata(id={self.id}, name={self.name}, value={self.value}'
         )
+
+
+class Location(models.Model):
+
+    name = models.CharField(max_length=100, unique=True)
+
+    description = models.TextField(blank=True, default='')
+
+    def __str__(self):
+        return f'Location(id={self.id}, name={self.name})'
+
+
+class DeviceSession(models.Model):
+
+    device = models.ForeignKey(
+        Device,
+        on_delete=models.CASCADE,
+        related_name='sessions')
+
+    location = models.ForeignKey(
+        Location,
+        on_delete=models.CASCADE,
+        related_name='locations')
+
+    start_date = models.DateTimeField(null=True, default=None, blank=True)
+
+    end_date = models.DateTimeField(null=True, default=None, blank=True)
+
+    notes = models.TextField(blank=True, default='')
+
+    def __str__(self):
+        return (f'DeviceSession(id={self.id}, device={self.device.mac}'
+                + f', location={self.location.name})')

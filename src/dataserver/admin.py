@@ -7,10 +7,10 @@ from . import models
 
 
 class DeviceAdmin(admin.ModelAdmin):
-    exclude = ('organisation', )
-    list_display = ('mac', 'device_short_description', 'organisation_name',)
-    list_display_links = ('mac', )
-    readonly_fields = ('mac', 'organisation_name', )
+    exclude = ('organisation',)
+    list_display = ('obj_id', 'mac', 'device_short_description', 'organisation_link',)
+    list_display_links = ('obj_id', 'mac',)
+    readonly_fields = ('mac', 'organisation_link',)
 
     def has_add_permission(self, request):
         return False
@@ -18,13 +18,17 @@ class DeviceAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         return False
 
-    def organisation_name(self, obj): # pylint: disable=no-self-use
+    def obj_id(self, obj): # pylint: disable=no-self-use
+        return format_html(str(obj))
+    obj_id.short_description = 'ID'
+
+    def organisation_link(self, obj): # pylint: disable=no-self-use
         link = reverse('admin:dataserver_organisation_change', args=(
             obj.organisation.id,))
         return format_html(
-            '<a href="%s">%s</a>' % (link, obj.organisation.name))
-    organisation_name.short_description = 'Organisation'
-    organisation_name.admin_order_field = 'organisation__name'
+            '<a href="%s">%s</a>' % (link, str(obj.organisation)))
+    organisation_link.short_description = 'Organisation'
+    organisation_link.admin_order_field = 'organisation__name'
 
     def device_short_description(self, obj): # pylint: disable=no-self-use
         truncator = Truncator(obj.description)
@@ -32,12 +36,12 @@ class DeviceAdmin(admin.ModelAdmin):
     device_short_description.short_description = 'Description'
 
 
-
 class OrganisationDeviceAdmin(admin.StackedInline):
     model = models.Device
     can_delete = False
     extra = 0
     fieldsets = ((None, {"fields": (),}),)
+    show_change_link = True
 
     def has_add_permission(self, request, obj):
         return False
@@ -49,10 +53,71 @@ class OrganisationApiKeyAdmin(admin.StackedInline):
 
 
 class OrganisationAdmin(admin.ModelAdmin):
+
     inlines = [OrganisationDeviceAdmin, OrganisationApiKeyAdmin]
-    list_display = ('name',)
-    list_display_links = ('name',)
+
+    list_display = ('obj_id', 'name',)
+
+    list_display_links = ('obj_id', 'name',)
+
+    def obj_id(self, obj): # pylint: disable=no-self-use
+        return format_html(str(obj))
+    obj_id.short_description = 'ID'
+
+
+class LocationAdmin(admin.ModelAdmin):
+
+    list_display = ('obj_id', 'name',)
+
+    list_display_links = ('obj_id', 'name',)
+
+    def obj_id(self, obj): # pylint: disable=no-self-use
+        return format_html(str(obj))
+    obj_id.short_description = 'ID'
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ('name',)
+        return ()
+
+
+class DeviceSessionAdmin(admin.ModelAdmin):
+
+    list_display = (
+        'obj_id', 'start_date', 'end_date', 'device_link', 'location_link',)
+
+    def get_exclude(self, request, obj=None):
+        if obj:
+            return ('device', 'location',)
+        return ()
+
+    def get_readonly_fields(self, request, obj=None):
+        if obj:
+            return ('device_link', 'location_link',)
+        return ()
+
+    def obj_id(self, obj): # pylint: disable=no-self-use
+        return format_html(str(obj))
+    obj_id.short_description = 'ID'
+
+    def device_link(self, obj): # pylint: disable=no-self-use
+        link = reverse('admin:dataserver_device_change', args=(
+            obj.device.id,))
+        return format_html(
+            '<a href="%s">%s</a>' % (link, str(obj.device)))
+    device_link.short_description = 'Device'
+    device_link.admin_order_field = 'device__mac'
+
+    def location_link(self, obj): # pylint: disable=no-self-use
+        link = reverse('admin:dataserver_location_change', args=(
+            obj.location.id,))
+        return format_html(
+            '<a href="%s">%s</a>' % (link, str(obj.location)))
+    location_link.short_description = 'Location'
+    location_link.admin_order_field = 'location__name'
 
 
 admin.site.register(models.Device, DeviceAdmin)
 admin.site.register(models.Organisation, OrganisationAdmin)
+admin.site.register(models.Location, LocationAdmin)
+admin.site.register(models.DeviceSession, DeviceSessionAdmin)
