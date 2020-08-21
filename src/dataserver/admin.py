@@ -7,9 +7,13 @@ from . import models
 
 
 class DeviceAdmin(admin.ModelAdmin):
+
     exclude = ('organisation',)
-    list_display = ('obj_id', 'mac', 'device_short_description', 'organisation_link',)
+
+    list_display = ('obj_id', 'mac', 'device_short_notes', 'organisation_link',)
+
     list_display_links = ('obj_id', 'mac',)
+
     readonly_fields = ('mac', 'organisation_link',)
 
     def has_add_permission(self, request):
@@ -30,10 +34,10 @@ class DeviceAdmin(admin.ModelAdmin):
     organisation_link.short_description = 'Organisation'
     organisation_link.admin_order_field = 'organisation__name'
 
-    def device_short_description(self, obj): # pylint: disable=no-self-use
-        truncator = Truncator(obj.description)
+    def device_short_notes(self, obj): # pylint: disable=no-self-use
+        truncator = Truncator(obj.notes)
         return format_html(truncator.chars(50, truncate='...'))
-    device_short_description.short_description = 'Description'
+    device_short_notes.short_description = 'Notes'
 
 
 class OrganisationDeviceAdmin(admin.StackedInline):
@@ -67,7 +71,7 @@ class OrganisationAdmin(admin.ModelAdmin):
 
 class LocationAdmin(admin.ModelAdmin):
 
-    list_display = ('obj_id', 'name',)
+    list_display = ('obj_id', 'name', 'organisation_link',)
 
     list_display_links = ('obj_id', 'name',)
 
@@ -75,10 +79,23 @@ class LocationAdmin(admin.ModelAdmin):
         return format_html(str(obj))
     obj_id.short_description = 'ID'
 
+    def get_exclude(self, request, obj=None):
+        if obj:
+            return ('organisation',)
+        return ()
+
     def get_readonly_fields(self, request, obj=None):
         if obj:
-            return ('name',)
+            return ('name', 'organisation_link',)
         return ()
+
+    def organisation_link(self, obj): # pylint: disable=no-self-use
+        link = reverse('admin:dataserver_organisation_change', args=(
+            obj.organisation.id,))
+        return format_html(
+            '<a href="%s">%s</a>' % (link, str(obj.organisation)))
+    organisation_link.short_description = 'Organisation'
+    organisation_link.admin_order_field = 'organisation__name'
 
 
 class DeviceSessionAdmin(admin.ModelAdmin):

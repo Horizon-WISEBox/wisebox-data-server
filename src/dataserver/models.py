@@ -51,7 +51,7 @@ class Device(models.Model):
         on_delete=models.CASCADE,
         related_name='devices')
 
-    description = models.TextField(
+    notes = models.TextField(
         blank=True,
         default='')
 
@@ -126,12 +126,23 @@ class BucketMetadata(models.Model):
 
 class Location(models.Model):
 
-    name = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=100)
 
-    description = models.TextField(blank=True, default='')
+    organisation = models.ForeignKey(
+        Organisation,
+        on_delete=models.CASCADE,
+        related_name='locations')
+
+    notes = models.TextField(blank=True, default='')
 
     def __str__(self):
         return f'Location(id={self.id}, name={self.name})'
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['name']),
+        ]
+        unique_together = [['name', 'organisation']]
 
 
 class DeviceSession(models.Model):
